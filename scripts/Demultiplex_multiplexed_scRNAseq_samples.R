@@ -53,7 +53,7 @@ files <- list.files(path = dataDir,
                     recursive = T,
                     full.names = T)
 
-# Remove the files which are not part of study
+# Remove the files which are not multiplexed and not included
 # Make sure to load only 40 files
 files <- files[-c(27, 28)]
 
