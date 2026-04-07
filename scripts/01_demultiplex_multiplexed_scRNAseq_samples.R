@@ -1,6 +1,6 @@
 
 ###############################################################################
-# Script name: Demultiplex_multiplexed_scRNAseq_samples.R
+# Script name: 01_demultiplex_multiplexed_scRNAseq_samples.R
 #
 # Description:
 # This script is designed to demultiplex multiplexed single‑cell RNA‑seq data
