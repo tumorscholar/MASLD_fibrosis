@@ -78,25 +78,6 @@ for (x in 1:length(lookup$Patient_ID)) {
 # Add meta data back to seurat object
 SeuObj <- AddMetaData(SeuObj, metadata = meta)
 
-# Add stage information
-#Create lookup table with stage and sample
-lookup <- data.frame(Patient_ID = c('11471','11183', '11040','11051','10113-1','10202','10203','10291-2','10380','10634','10738','9680','9932', '9991','10205','9999','10113-2','9961','10742', '11327'),
-                     StageGroup = c('F2_3','F2_3','F2_3','F0_1','F0_1','F0_1','F0_1','F0_1','F0_1','F0_1','F0_1','F0_1','F2_3','F2_3', 'F2_3', 'F0_1','F0_1','F0_1', 'H','F0_1'))
-
-# Extract meta data
-meta <- SeuObj@meta.data
-
-# Create new column in meta data for Stage
-meta$StageGroup <- NA
-
-# Run for all samples in a for loop to populate the whole column
-for (x in 1:length(lookup$Patient_ID)) {
- meta$StageGroup[grep(lookup$Patient_ID[x], meta$Patient_ID)] <- lookup$StageGroup[x]
-}
-
-# Add meta data back to seurat object
-SeuObj <- AddMetaData(SeuObj, metadata = meta)
-
 # Add stage details
 # Create lookup table with stage and sample
 lookup <- data.frame(Patient_ID = c('11471', '11183', '11040','11051','10113-1','10202','10203','10291-2','10380','10634','10738','9680','9932', '9991','10205','9999','10113-2','9961','10742', '11327'),
