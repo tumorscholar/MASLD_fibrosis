@@ -236,12 +236,13 @@ DefaultAssay(SeuObj) <- 'RNA'
 
 # Add cluster.stage in metadata
 SeuObj$Cluster.StageSep <- paste(SeuObj$seurat_clusters , SeuObj$StageSep, sep = "_")
-SeuObj$Cluster.StageGroup <- paste(SeuObj$seurat_clusters , SeuObj$StageGroup, sep = "_")
+
 # Save obj in case R studio crashes
 
 saveRDS(SeuObj, '/data/Blizard-AlazawiLab/rk/seurat/SeuObjx.rds')
 
 #### Fibrosis gene markers in each cluster ####
+
 Idents(SeuObj) <- "seurat_clusters"
 DefaultAssay(SeuObj) <- 'RNA'
 
