@@ -18,7 +18,7 @@
 #  - Quantifying total T cells and unique TCR clonotypes
 #  - Defining expanded, hyperexpanded, and singleton clonotypes
 #  - Mapping expanded clonotypes to single cells via barcode matching
-#  - Performing QC filtering of T cells
+#  - Making T cell object
 #  - Differential expression analysis of expanded vs non‑expanded T cells
 #  - Visualization of expanded clone–associated RNA and ADT markers
 #
@@ -26,7 +26,7 @@
 # differences associated with TCR clonal expansion across tissues in MASLD.
 #
 # Outputs:
-#  - Seurat objects annotated with clonality metadata
+#  - T cell object annotated with clonality metadata
 #  - Differential expression results for expanded vs non‑expanded T cells
 #  - Figures for RNA and ADT marker expression
 #
@@ -40,7 +40,8 @@
 library(Seurat)        
 library(tidyverse)     
 library(scRepertoire)  
-library(patchwork)  
+library(patchwork)
+library(SeuratExtend)
 
 setwd ('/data/home/hdx044/files/screpertoire/demux_contig/TCR')
 
@@ -232,7 +233,6 @@ cat("Singleton T cells:", n_singleton_cells, "\n")
 # Sanity check (expanded + singleton should equal total)
 cat("Check total cells (expanded + singleton):", n_expanded_cells + n_singleton_cells, "\n")
 
-
 # Make sure column names match
 colnames(combined.TCR)  # look for cell barcode column (often "cell" or "barcode")
 
@@ -249,40 +249,103 @@ expanded_tcr_barcodes <- combined.TCR$barcode[ combined.TCR$CTaa %in% expanded_c
 length(expanded_tcr_barcodes)
 # 15564
 
-# Load T cell contig object
-seurat_obj <- readRDS('/data/Blizard-AlazawiLab/rk/seurat/TcellContig.rds')
+# Load seurat object
+seurat_obj <- readRDS('/data/Blizard-AlazawiLab/rk/seurat/SeuObjx.rds')
 
 DefaultAssay(seurat_obj) <- "RNA"
 
-# Seurat barcodes
-seurat_barcodes <- rownames(seurat_obj@meta.data)
+tcr_df <- dplyr::bind_rows(combined.TCR)
 
-# Create a metadata column "expression_group" or "Clonality"
-seurat_obj$Clonality <- ifelse(colnames(seurat_obj) %in% expanded_tcr_barcodes, "Expanded", "Non-expanded")
+tcr_df$cell_barcode <- sub(".*_", "", tcr_df$barcode)
+tcr_df$tissue <- sub(".*-", "", sub("_.*", "", tcr_df$barcode))
 
-# Quick check
-table(seurat_obj$Clonality)
+head(tcr_df$tissue)
 
-# QC Tcell Contig obj
-# Filter cells
-# Calculate % mitochondrial reads
-seurat_obj[["percent.mt"]] <- PercentageFeatureSet(seurat_obj, pattern = "^MT-")
+tcr_df$barcode_tissue <- paste(
+  tcr_df$tissue,
+  tcr_df$cell_barcode,
+  sep = "_"
+)
 
-seurat_obj_qc <- subset(seurat_obj, 
-                          subset = nFeature_RNA > 200 & nFeature_RNA < 6000 & percent.mt < 20)
+head(tcr_df$barcode_tissue)
+
+seurat_obj@meta.data$cell_barcode <- sub(
+  "_\\d+$", "", rownames(seurat_obj@meta.data)
+)
+
+seurat_obj@meta.data$tissue_short <- sub(
+  " .*", "", seurat_obj@meta.data$Tissue
+)
+
+seurat_obj@meta.data$barcode_tissue <- paste(
+  seurat_obj@meta.data$tissue_short,
+  seurat_obj@meta.data$cell_barcode,
+  sep = "_"
+)
+
+sum(tcr_df$barcode_tissue %in% seurat_obj@meta.data$barcode_tissue)
+
+intersect(
+  tcr_df$barcode_tissue,
+  seurat_obj@meta.data$barcode_tissue
+)[1:10]
+
+matched_barcodes <- intersect(
+  tcr_df$barcode_tissue,
+  seurat_obj@meta.data$barcode_tissue
+)
+
+length(matched_barcodes)
+
+cells_use <- rownames(seurat_obj@meta.data)[
+  seurat_obj@meta.data$barcode_tissue %in% matched_barcodes &
+    !duplicated(seurat_obj@meta.data$barcode_tissue)
+]
+
+seurat_Tcells <- subset(seurat_obj, cells = cells_use)
+
+ncol(seurat_Tcells)  
+
+# Clean Seurat barcode
+seurat_Tcells@meta.data$cell_barcode <- sub("_\\d+$", "", rownames(seurat_Tcells@meta.data))
+
+# Extract short tissue name from Seurat Tissue column
+seurat_Tcells@meta.data$tissue_short <- sub(" .*", "", seurat_Tcells@meta.data$Tissue)
+
+# Create Seurat tissue-aware barcode
+seurat_Tcells@meta.data$barcode_tissue <- paste(
+  seurat_Tcells@meta.data$tissue_short,
+  seurat_Tcells@meta.data$cell_barcode,
+  sep = "_"
+)
+
+expanded_barcode_tissue <- paste(
+  sub(".*-", "", sub("_.*", "", expanded_tcr_barcodes)),  # tissue
+  sub(".*_", "", expanded_tcr_barcodes),                  # cell barcode
+  sep = "_"
+)
+
+seurat_Tcells$Clonality <- ifelse(
+  seurat_Tcells@meta.data$barcode_tissue %in% expanded_barcode_tissue,
+  "Expanded",
+  "Non-expanded"
+)
+
+saveRDS(seurat_Tcells, '/data/Blizard-AlazawiLab/rk/seurat/TcellObj.rds')
+
+# Load T cells object
+seurat_obj <- readRDS('/data/Blizard-AlazawiLab/rk/seurat/TcellObj.rds')
 
 #### Fig2e #####
 # Ensure the factor is set correctly
 seurat_obj_qc$Clonality <- factor(seurat_obj$Clonality, levels = c("Non-expanded", "Expanded"))
 
 # Set the default assay (RNA or whichever contains gene expression)
-DefaultAssay(seurat_obj_qc) <- "RNA"
-
-table(seurat_obj_qc$Clonality)
+DefaultAssay(seurat_obj) <- "RNA"
 
 # Perform differential expression
 de_markers <- FindMarkers(
-  object = seurat_obj_qc,
+  object = seurat_obj,
   ident.1 = "Expanded",
   ident.2 = "Non-expanded",
   group.by = "Clonality",
@@ -292,7 +355,7 @@ de_markers <- FindMarkers(
 
 # View top genes sorted by log fold change
 de_markers <- de_markers[order(de_markers$avg_log2FC, decreasing = TRUE), ]
-head(de_markers)
+head(de_markers, n=10)
 
 # Extract significantly upregulated genes (optional)
 sig_up_genes <- subset(de_markers, avg_log2FC > 0 & p_val_adj < 0.05)
@@ -348,11 +411,11 @@ print(ggp)
 dev.off()
 
 #### Fig2.f #####
-DefaultAssay(seurat_obj_qc) <- "ADTonly"
+DefaultAssay(seurat_obj) <- "ADTonly"
 
 # Perform differential expression
 de_markers <- FindMarkers(
-  object = seurat_obj_qc,
+  object = seurat_obj,
   ident.1 = "Expanded",
   ident.2 = "Non-expanded",
   group.by = "Clonality",
@@ -364,55 +427,25 @@ de_markers <- FindMarkers(
 de_markers <- de_markers[order(de_markers$avg_log2FC, decreasing = TRUE), ]
 print(de_markers)
 
-expanded_ADTs <- c(
+adt_features <- c(
   "Hu.CD57",
   "Hu.CD8",
-  "Hu.CD11a",
   "Hu.KLRG1",
+  "Hu.CD11a",
   "Hu.CD18",
-  "Hu.CD5",
+  "Hu.CD196",
   "Hu.CD4-RPA.T4",
+  "Hu.CD7",
   "Hu.CD27",
-  "Hu.CD62L",
-  "Hu.CD7"
+  "Hu.CD62L"
 )
 
-DefaultAssay(seurat_obj_qc) <- "ADT"
-
-adt_counts <- GetAssayData(seurat_obj_qc, layer = "counts")
-keep_cells <- colnames(seurat_obj_qc)[Matrix::colSums(adt_counts) > 0]
-seurat_obj_qc_adt <- subset(seurat_obj_qc, cells = keep_cells)
-
-seurat_obj_qc_adt <- subset(
-  seurat_obj_qc_adt,
-  subset = !is.na(Tissue) & !is.na(Clonality)
-)
-
-Idents(seurat_obj_qc_adt) <- "Tissue"
-
-seurat_obj_qc_adt$Tissue <- as.factor(as.character(seurat_obj_qc_adt$Tissue))
-seurat_obj_qc_adt$Clonality <- as.factor(as.character(seurat_obj_qc_adt$Clonality))
-
-seurat_obj_qc_adt <- UpdateSeuratObject(seurat_obj_qc_adt)
-
-seurat_obj_qc_adt <- NormalizeData(
-  seurat_obj_qc_adt,
-  assay = "ADT",
-  normalization.method = "CLR"
-)
-
-adt_data <- GetAssayData(seurat_obj_qc_adt, layer = "data")
-
-panel_cells <- colnames(seurat_obj_qc_adt)[
-  Matrix::colSums(adt_data[expanded_ADTs, , drop = FALSE]) > 0
-]
-
-seurat_obj_qc_adt <- subset(seurat_obj_qc_adt, cells = panel_cells)
+DefaultAssay(seurat_obj) <- "ADT"
 
 # DotPlot2
 ggp <- DotPlot2(
-  seurat_obj_qc_adt,
-  features = expanded_ADTs,
+  seurat_obj,
+  features = adt_features,
   group.by = "Tissue",
   split.by = "Clonality",
   legend_order = c("fill", "color", "size")  # Your preferred order+
