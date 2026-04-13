@@ -6,7 +6,7 @@
 #   tissues, comparing Healthy, No Fibrosis, and Fibrosis conditions.
 #   The script identifies expanded clonotypes, classifies tissue-sharing
 #   patterns, integrates clonality with a Seurat T-cell object, and performs
-#   differential gene and ADT analyses with downstream visualization.
+#   differential gene and ADT analyses with downstream visualisation.
 #
 # Key outputs:
 #   - Expanded and hyperexpanded clonotype statistics
