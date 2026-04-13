@@ -254,8 +254,10 @@ seurat_obj <- readRDS('/data/Blizard-AlazawiLab/rk/seurat/SeuObjx.rds')
 
 DefaultAssay(seurat_obj) <- "RNA"
 
+# Combine all TCR files
 tcr_df <- dplyr::bind_rows(combined.TCR)
 
+# Extract cell barcode from TCR barcode
 tcr_df$cell_barcode <- sub(".*_", "", tcr_df$barcode)
 tcr_df$tissue <- sub(".*-", "", sub("_.*", "", tcr_df$barcode))
 
@@ -269,6 +271,14 @@ tcr_df$barcode_tissue <- paste(
 
 head(tcr_df$barcode_tissue)
 
+tcr_meta <- tcr_df %>%
+  dplyr::select(
+    barcode_tissue,
+    CTaa
+  ) %>%
+  distinct(barcode_tissue, .keep_all = TRUE)
+
+# Prepare Seurat barcodes
 seurat_obj@meta.data$cell_barcode <- sub(
   "_\\d+$", "", rownames(seurat_obj@meta.data)
 )
@@ -319,6 +329,19 @@ seurat_Tcells@meta.data$barcode_tissue <- paste(
   sep = "_"
 )
 
+tcr_meta <- tcr_meta[
+  match(
+    seurat_Tcells@meta.data$barcode_tissue,
+    tcr_meta$barcode_tissue
+  ),
+]
+
+seurat_Tcells <- AddMetaData(
+  seurat_Tcells,
+  metadata = tcr_meta$CTaa,
+  col.name = "CTaa"
+)
+
 expanded_barcode_tissue <- paste(
   sub(".*-", "", sub("_.*", "", expanded_tcr_barcodes)),  # tissue
   sub(".*_", "", expanded_tcr_barcodes),                  # cell barcode
@@ -340,7 +363,7 @@ seurat_obj <- readRDS('/data/Blizard-AlazawiLab/rk/seurat/TcellObj.rds')
 # Ensure the factor is set correctly
 seurat_obj_qc$Clonality <- factor(seurat_obj$Clonality, levels = c("Non-expanded", "Expanded"))
 
-# Set the default assay (RNA or whichever contains gene expression)
+# Set the default assay
 DefaultAssay(seurat_obj) <- "RNA"
 
 # Perform differential expression
