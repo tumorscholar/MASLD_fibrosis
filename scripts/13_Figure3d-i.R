@@ -181,7 +181,7 @@ tissue_vector <- rep(tissues, times = 20)
 
 # Check length matches number of samples
 length(tissue_vector)   # 80
-length(combined.TCR)    # 80, matches ✅
+length(combined.TCR)    # 80, matches
 
 # ️Assign tissue info to each sample in the list
 for (i in seq_along(combined.TCR)) {
