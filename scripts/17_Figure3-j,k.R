@@ -1,14 +1,40 @@
-# -----------------------------
-# 1. Load libraries
-# -----------------------------
-library(AUCell)
-library(dplyr)
-library(data.table)
+# ==========================================================
+# Title: 17_Figure3-d-i.R
+#  
+# Regulon activity profiling of expanded T cells using AUCell
+#
+# This script performs:
+#  - AUCell-based scoring of SCENIC-derived regulons
+#  - Comparison of regulon activity between:
+#      (i) Expanded T cells shared across solid tissues vs
+#          tissue-restricted expanded clones
+#     (ii) Shared expanded T cells from Fibrosis vs No Fibrosis
+#  - Visualization of differential regulon activity using
+#    heatmaps with a common color scale
+#
+# Input:
+#  - Seurat object containing expanded T cells
+#  - SCENIC regulons in GMT format
+#
+# Output:
+#  - Heatmaps (Fig. 3i and Fig. 3j)
+#  - AUCell score matrix (CSV)
+#
+# Notes:
+#  - Regulon activity is quantified using AUCell AUC scores
+#  - Statistical comparisons use Wilcoxon rank-sum tests with
+#    FDR correction
+# ==========================================================
 
-# -----------------------------
-# 2. Load regulons from GMT
-# -----------------------------
-regulon_gmt <- "/data/Blizard-AlazawiLab/rk/scenic/motifs/regulons_from_ctx.gmt"
+library(Seurat)        
+library(AUCell)        
+library(data.table)    
+library(dplyr)         
+library(pheatmap)      
+library(Matrix)     
+
+# Load regulons from GMT
+regulon_gmt <- "/data/Blizard-AlazawiLab/rk/scenicTcell/results/regulons_from_ctx.gmt"
 regulons <- readLines(regulon_gmt) %>%
  strsplit("\t") %>%
  lapply(function(x) list(name = x[1], genes = x[3:length(x)]))
@@ -16,10 +42,6 @@ regulons <- readLines(regulon_gmt) %>%
 # Convert to a named list
 reg_list <- setNames(lapply(regulons, function(x) x$genes),
                      sapply(regulons, function(x) x$name))
-
-# -----------------------------
-# 3. Load expression matrix
-# -----------------------------
 
 # load obj
 obj <- readRDS('/data/Blizard-AlazawiLab/rk/seurat/expandedTcellFinal.rds')
@@ -30,33 +52,22 @@ obj <- subset(obj, subset = expanded_shared_class != "a_PBMC")
 obj$tissue.type <- paste0(obj$Tissue, obj$expanded_shared_class, "-")
 
 # Ensure it's genes x cells (rows = genes, columns = cells)
-# Example if from Seurat:
 
 ex_mtx <- as.matrix(GetAssayData(obj, slot="counts"))
 
-# -----------------------------
-# 4. Build rankings for AUCell
-# -----------------------------
+# Build rankings for AUCell
 cells_rankings <- AUCell_buildRankings(ex_mtx, nCores=1, plotStats=TRUE)
 
-# -----------------------------
-# 5. Calculate AUCell scores
-# -----------------------------
+# Calculate AUCell scores
 cells_AUC_mat <- AUCell_calcAUC(reg_list, cells_rankings, aucMaxRank = nrow(ex_mtx) * 0.05)
 
 # cells_AUC_mat: rows = regulons, columns = cell barcodes
 
-# -----------------------------
-# 6. Save AUCell matrix
-# -----------------------------
+# Save AUCell matrix
 write.csv(as.data.frame(getAUC(cells_AUC_mat)),
-          "/data/Blizard-AlazawiLab/rk/scenic/AUCell_scores.csv")
+          "/data/Blizard-AlazawiLab/rk/scenicTcell/results/AUCell_scores.csv")
 
-
-#### Shared vs Single Clone Regulon Analysis ####
-
-library(dplyr)
-library(pheatmap)
+## Fig3.j ##
 
 # Tissues to compare
 tissues <- c("LIVER", "SAT", "VAT")
@@ -157,10 +168,7 @@ pheatmap(
 )
 
 
-#### Shared Clone Analysis: Fibrosis vs No Fibrosis ####
-
-library(dplyr)
-library(pheatmap)
+## Fig3.j ##
 
 # AUCell matrix
 auc_mat <- getAUC(cells_AUC_mat)
@@ -179,8 +187,8 @@ for (tiss in tissues) {
  shared_cells <- colnames(obj)[obj$tissue.type == paste0(tiss, "c_Shared_between_solid_tissues-")]
  
  # Split by fibrosis stage
- grp1_cells <- intersect(shared_cells, colnames(auc_mat)[obj$Stage[colnames(auc_mat)] == "a_Fibrosis"])
- grp2_cells <- intersect(shared_cells, colnames(auc_mat)[obj$Stage[colnames(auc_mat)] == "b_No_Fibrosis"])
+ grp1_cells <- intersect(shared_cells, colnames(auc_mat)[obj$Stage[colnames(auc_mat)] == "Fibrosis"])
+ grp2_cells <- intersect(shared_cells, colnames(auc_mat)[obj$Stage[colnames(auc_mat)] == "No_fibrosis"])
  
  message("  Fibrosis cells: ", length(grp1_cells))
  message("  No fibrosis cells: ", length(grp2_cells))
@@ -262,80 +270,52 @@ pheatmap(
               length.out = 51)
 )
 
+## Plot both fig 3.j,i in same scale ##
 
-# Assume you already have:
-# heat_mat_shared_vs_single
-# heat_mat_fib_vs_nofib
-
-# Step 1: Compute global min/max across both matrices
+# Compute global min/max across both matrices
 global_min <- min(c(heat_mat_shared_vs_single, heat_mat_fib_vs_nofib), na.rm = TRUE)
 global_max <- max(c(heat_mat_shared_vs_single, heat_mat_fib_vs_nofib), na.rm = TRUE)
 
-# Step 2: Define common breaks
+# Define common breaks
 common_breaks <- seq(global_min, global_max, length.out = 51)
 
-library(pheatmap)
-library(officer)
-library(rvg)
-library(grid)
-
-# Step 3: Plot first heatmap
+# Plot first heatmap
 ggp1 <- pheatmap(
- heat_mat_shared_vs_single,
- cluster_rows = FALSE,
- cluster_cols = TRUE,
- color = colorRampPalette(c("blue", "white", "red"))(50),
- breaks = common_breaks,
- main = "Differential Regulon AUC (Shared vs Single) T cells",
- fontsize_row = 10,
- fontsize_col = 8
+  heat_mat_shared_vs_single,
+  cluster_rows = FALSE,
+  cluster_cols = TRUE,
+  color = colorRampPalette(c("blue", "white", "red"))(50),
+  breaks = common_breaks,
+  main = "Differential Regulon AUC\n(Shared vs Single) T cells",  # \n splits title into 2 lines
+  fontsize_row = 10,
+  fontsize_col = 8,
+  main.fontface = "plain"                               
 )
 
-# Step 4: Plot second heatmap with same color axis
+setwd("/data/home/hdx044/plots/scenic")
+svg("RegulonSharedVsSingle.svg", width = 6, height = 4)
+print(ggp1)
+dev.off()
+
+
+# Plot second heatmap with same color axis
 ggp2 <- pheatmap(
  heat_mat_fib_vs_nofib,
  cluster_rows = FALSE,
  cluster_cols = TRUE,
  color = colorRampPalette(c("blue", "white", "red"))(50),
  breaks = common_breaks,
- main = "Differential Regulon AUC (Fibrosis - No fibrosis) Shared T cells",
+ main = "Differential Regulon AUC\n(Fibrosis - No Fibrosis) Shared T cells",
  fontsize_row = 10,
- fontsize_col = 8
+ fontsize_col = 8,
+ main.fontface = "plain"
 )
 
-ppt <- read_pptx()
-ppt <- add_slide(ppt, layout = "Blank", master = "Office Theme")
+ggp2
 
-ppt <- ph_with(
- ppt,
- dml(code = {
-  grid.newpage()
-  grid.draw(ggp1$gtable)
- }),
- location = ph_location(
-  left   = 0,
-  top    = 0,
-  width  = 5,
-  height = 3
- )
-)
+setwd("/data/home/hdx044/plots/scenic")
+svg("RegulonFibrosisVsNoFibrosis.svg", width = 6, height = 4)
+print(ggp2)
+dev.off()
 
-ppt <- ph_with(
- ppt,
- dml(code = {
-  grid.newpage()
-  grid.draw(ggp2$gtable)
- }),
- location = ph_location(
-  left   = 5,
-  top    = 0,
-  width  = 5,
-  height = 3
- )
-)
-
-print(
- ppt,
- target = "/data/home/hdx044/plots/scenic/Regulon_heatmaps_Tcells.pptx"
-)
-
+# End of the script
