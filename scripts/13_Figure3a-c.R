@@ -1,5 +1,5 @@
 #########################################################################
-# Title: 13_Figure3a-c.R
+# Script name: 13_Figure3a-c.R
 #
 # Purpose:
 # This script processes TCR contig data using scRepertoire to quantify

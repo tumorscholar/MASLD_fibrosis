@@ -1,5 +1,5 @@
-# ==========================================================
-# Title: 17_Figure3-d-i.R
+###############################################################################
+# Script name: 17_Figure3-d-i.R
 #  
 # Regulon activity profiling of expanded T cells using AUCell
 #
@@ -24,7 +24,7 @@
 #  - Regulon activity is quantified using AUCell AUC scores
 #  - Statistical comparisons use Wilcoxon rank-sum tests with
 #    FDR correction
-# ==========================================================
+###############################################################################
 
 library(Seurat)        
 library(AUCell)        

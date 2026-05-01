@@ -1,4 +1,33 @@
-
+##################################################################################
+# Script name: 18_MakingcellchatObj.R
+#
+# Generation of Seurat object with shared expanded T cells
+# for CellChat and downstream cell–cell communication analyses
+#
+# This script:
+#  - Loads a full Seurat object containing all cell populations
+#  - Identifies expanded T-cell clonotypes shared across multiple
+#    solid tissues using a curated expanded T-cell reference object
+#  - Annotates shared expanded T cells in the full dataset
+#  - Collapses shared expanded T cells into a unified "Tcell" group
+#  - Removes selected non-T-cell clusters not required for analysis
+#  - Reorders cluster identities to prioritise T cells
+#  - Saves a final Seurat object for CellChat input
+#
+# Input files:
+#  - SeuObjx.rds: Full Seurat object with all cells
+#  - expandedTcellFinal.rds: Expanded T-cell object with clone sharing annotations
+#
+# Output file:
+#  - SharedTcells&NonTcell.rds: Annotated Seurat object containing
+#    shared expanded T cells and remaining non-T-cell populations
+#
+# Notes:
+#  - Shared expanded T cells are defined as clonotypes detected
+#    across more than one solid tissue compartment
+#  - Metadata fields 'cellchat' and 'cluster_cellchat' are created
+#    to support CellChat-based communication inference
+##################################################################################
 library(Seurat)
 library(dplyr)
 

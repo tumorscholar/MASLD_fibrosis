@@ -1,0 +1,157 @@
+################################################################################
+## Script name: 22_Figure4a,f_SAT.R
+##
+## CellChat visualisation and comparative analysis – SAT
+##
+## This script performs:
+## - Loading of precomputed CellChat objects for SAT tissue
+##   across Healthy, No Fibrosis, and Fibrosis conditions
+## - Merging of CellChat objects for cross‑condition comparison
+## - Visualisation of global sending/receiving signalling roles
+##   using 2D signaling role scatter plots (Fig. 4a)
+## - Identification and visualisation of differential
+##   ligand–receptor interactions between No Fibrosis and
+##   Fibrosis conditions using bubble plots (Fig. 4f)
+##
+##   Input files:
+## - cellchatSATTcHealthy.rds
+## - cellchatSATTcNoFibrosis.rds
+## - cellchatSATTcFibrosis.rds
+##
+##   Output files:
+## - Differntial_interaction_strength_2D_SATTc.png
+## - EndothelialTcSignallingSAT.svg
+## - TcEndothelialSignallingSAT.svg
+##
+##   Notes:
+## - All CellChat objects were generated upstream on HPC
+##   using sequential execution to ensure memory stability
+## - This script performs no CellChat inference, only
+##   visualisation and comparative analyses
+################################################################################
+
+library(Seurat)
+library(CellChat)
+library(ggplot2)
+library(patchwork)
+library(future)
+options(stringsAsFactors = FALSE)
+
+# Load CellChat object of Healthy NoFibrosis and Fibrosis
+cellchatHsat <- readRDS("/data/Blizard-AlazawiLab/rk/cellchat/SAT/sharedTcells/cellchatSATTcHealthy.rds")
+cellchatF0sat <- readRDS("/data/Blizard-AlazawiLab/rk/cellchat/SAT/sharedTcells/cellchatSATTcNoFibrosis.rds")
+cellchatF123sat <- readRDS("/data/Blizard-AlazawiLab/rk/cellchat/SAT/sharedTcells/cellchatSATTcFibrosis.rds")
+
+# Merge datasets for comparison
+object.list <- list(Healthy = cellchatHsat, NoFibrosis = cellchatF0sat, Fibrosis = cellchatF123sat)
+cellchat <- mergeCellChat(object.list, add.names = names(object.list))
+
+#### Fig.4.a ####
+
+# Identify cell populations with significant changes in sending or receiving signals
+num.link <- unlist(sapply(object.list, function(x) {
+ rowSums(x@net$count) + colSums(x@net$count) - diag(x@net$count)
+}))
+
+weight.MinMax <- c(min(num.link, na.rm = TRUE), max(num.link, na.rm = TRUE)) 
+
+gg <- list()
+for (i in 1:length(object.list)) {
+ gg[[i]] <- netAnalysis_signalingRole_scatter(object.list[[i]], 
+                                              title = names(object.list)[i], 
+                                              weight.MinMax = weight.MinMax, 
+                                              label.size = 6, font.size = 14, font.size.title = 14 ) +  
+  scale_y_continuous(limits = c(0, 50), breaks = seq(0, 50, by = 5)) + 
+  scale_x_continuous(limits = c(0, 50), breaks = seq(0, 50, by = 5)) +
+  
+  theme_classic(base_size = 12) +
+  theme(
+   axis.text.x = element_text(angle = 45, hjust = 1),
+   axis.line = element_line(color = "black"),
+   legend.position = "right",
+   legend.direction = "vertical",
+   legend.title = element_text(size = 10),
+   legend.text = element_text(size = 8),
+   legend.key.size = unit(1.5, "lines")
+  )
+}
+ggp <- patchwork::wrap_plots(plots = gg)
+ggp
+
+ggsave("/data/Blizard-AlazawiLab/rk/cellchat/SAT/sharedTcells/Differntial_interaction_strength_2D_Tc_SAT.png", dpi = 300, width = 18, height = 6)
+
+
+#### Fig.4.f ####
+
+# Merge F0 and F1_2_3 datasets for comparison
+object.list <- list(NoFibrosis = cellchatF0sat, Fibrosis = cellchatF123sat)
+cellchat <- mergeCellChat(object.list, add.names = names(object.list))
+
+# Identify the up-regulated and down-regulated signaling ligand-receptor pairs
+ptm = Sys.time()
+gg1 <- netVisual_bubble(cellchat, sources.use = c(7,13), targets.use = c(1),  comparison = c(1, 2), max.dataset = 2, title.name = "Increased signalling in SAT", angle.x = 45, remove.isolate = T, dot.size.min = 5,
+                        dot.size.max = 8,
+                        font.size = 16,
+                        font.size.title = 14,
+                        color.text = c("black", "black"))
+gg1 <- gg1 +
+ coord_flip() +
+ scale_color_gradient(
+  low = "mistyrose",  # light
+  high = "maroon",     # dark maroon
+  name = "Communication probability") +
+ guides(
+  color = guide_colorbar(order = 1),  # heatmap bar
+  size  = guide_legend(order = 2)     # p-value dots
+ ) +
+ theme(
+  legend.position = "right",
+  legend.direction = "vertical",
+  legend.box = "vertical",
+  legend.title = element_text(size = 16),
+  legend.text  = element_text(size = 14),
+  legend.key.size = unit(1.5, "lines")
+ )
+
+gg1
+
+# Save as SVG
+svg("/data/Blizard-AlazawiLab/rk/cellchat/SAT/sharedTcells/EndothelialTcSignallingSAT.svg",
+    width = 16, height = 5)
+print(gg1)
+dev.off()
+
+
+ptm = Sys.time()
+gg1 <- netVisual_bubble(cellchat, sources.use = c(1), targets.use = c(7,13),  comparison = c(1, 2), max.dataset = 2, title.name = "Increased signalling in SAT", angle.x = 45, remove.isolate = T, dot.size.min = 5,
+                        dot.size.max = 8,
+                        font.size = 16,
+                        font.size.title = 14,
+                        color.text = c("black", "black"))
+gg1 <- gg1 +
+ coord_flip() +
+ scale_color_gradient(
+  low = "mistyrose",  # light
+  high = "maroon",     # dark maroon
+  name = "Communication probability") +
+ guides(
+  color = guide_colorbar(order = 1),  # heatmap bar
+  size  = guide_legend(order = 2)     # p-value dots
+ ) +
+ theme(
+  legend.position = "right",
+  legend.direction = "vertical",
+  legend.box = "vertical",
+  legend.title = element_text(size = 16),
+  legend.text  = element_text(size = 14),
+  legend.key.size = unit(1.5, "lines")
+ )
+
+gg1
+# Save as SVG
+svg("/data/Blizard-AlazawiLab/rk/cellchat/SAT/sharedTcells/TcEndothelialSignallingSAT.svg",
+    width = 16, height = 5)
+print(gg1)
+dev.off()
+
+# End of the script
