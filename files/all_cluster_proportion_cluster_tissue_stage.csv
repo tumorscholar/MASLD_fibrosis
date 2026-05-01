@@ -1,0 +1,305 @@
+"","Tissue","Stage","cell_type_with_cluster","count","prop"
+"1","LIVER","Fibrosis","Naïve-Activated T cells (C1)",2345,0.0700543705562526
+"2","LIVER","Fibrosis","CD8 Effector Memory (C0)",7744,0.231343729461672
+"3","LIVER","Fibrosis","CD8 Cytotoxic T cells (C4)",2004,0.0598673597418892
+"4","LIVER","Fibrosis","CD4 T cells (C7)",2282,0.068172312839816
+"5","LIVER","Fibrosis","CD4 Proliferating T cells (C21)",375,0.011202724502599
+"6","LIVER","Fibrosis","Naïve B cells (C8)",867,0.025900699050009
+"7","LIVER","Fibrosis","B cells (C27)",22,0.000657226504152477
+"8","LIVER","Fibrosis","Plasma cells_1 (C19)",573,0.0171177630399713
+"9","LIVER","Fibrosis","Plasma cells_2 (C29)",2,5.97478640138615e-05
+"10","LIVER","Fibrosis","CD14 Monocytes (C3)",1370,0.0409272868494951
+"11","LIVER","Fibrosis","CD16 Monocytes (C11)",802,0.0239588934695585
+"12","LIVER","Fibrosis","Macrophage (C5)",985,0.0294258230268268
+"13","LIVER","Fibrosis","Myeloid Dendritic cells (C10)",1628,0.0486347613072833
+"14","LIVER","Fibrosis","Plasmacytoid dendritic cells (C22)",363,0.0108442373185159
+"15","LIVER","Fibrosis","TREM2 Dendritic cells (C23)",5,0.000149369660034654
+"16","LIVER","Fibrosis","Neutrophil (C14)",1449,0.0432873274780427
+"17","LIVER","Fibrosis","CD56 dim NK cells (C2)",2329,0.0695763876441417
+"18","LIVER","Fibrosis","CD56 high NK cells (C12)",2671,0.079793272390512
+"19","LIVER","Fibrosis","Fibroblasts (C13)",19,0.000567604708131684
+"20","LIVER","Fibrosis","Mesothelial cells (C24)",2,5.97478640138615e-05
+"21","LIVER","Fibrosis","Adipocytes_2 (C26)",4,0.000119495728027723
+"22","LIVER","Fibrosis","ACKR1 Endothelial cells (C9)",730,0.0218079703650595
+"23","LIVER","Fibrosis","TAGLN Endothelial cells (C16)",592,0.017685367748103
+"24","LIVER","Fibrosis","Blood vessels (C6)",675,0.0201649041046783
+"25","LIVER","Fibrosis","Hepatocytes (C20)",1065,0.0318157375873813
+"26","LIVER","Fibrosis","Liver Ductal cells (C18)",1067,0.0318754854513951
+"27","LIVER","Fibrosis","Erythroid cells (C17)",729,0.0217780964330525
+"28","LIVER","Fibrosis","Mast cells (C15)",738,0.0220469618211149
+"29","LIVER","Fibrosis","Platelets (C28)",37,0.00110533548425644
+"30","LIVER","Healthy","Naïve-Activated T cells (C1)",176,0.0216909046093172
+"31","LIVER","Healthy","CD8 Effector Memory (C0)",673,0.0829430613754005
+"32","LIVER","Healthy","CD8 Cytotoxic T cells (C4)",147,0.0181168350998275
+"33","LIVER","Healthy","CD4 T cells (C7)",506,0.062361350751787
+"34","LIVER","Healthy","CD4 Proliferating T cells (C21)",281,0.034631501109194
+"35","LIVER","Healthy","Naïve B cells (C8)",109,0.013433571604634
+"36","LIVER","Healthy","B cells (C27)",1,0.000123243776189302
+"37","LIVER","Healthy","Plasma cells_1 (C19)",881,0.108577766822775
+"38","LIVER","Healthy","Plasma cells_2 (C29)",141,0.0173773724426916
+"39","LIVER","Healthy","CD14 Monocytes (C3)",122,0.0150357406950949
+"40","LIVER","Healthy","CD16 Monocytes (C11)",75,0.00924328321419768
+"41","LIVER","Healthy","Macrophage (C5)",24,0.00295785062854326
+"42","LIVER","Healthy","Myeloid Dendritic cells (C10)",538,0.0663051515898447
+"43","LIVER","Healthy","Plasmacytoid dendritic cells (C22)",137,0.0168843973379344
+"44","LIVER","Healthy","TREM2 Dendritic cells (C23)",3,0.000369731328567907
+"45","LIVER","Healthy","Neutrophil (C14)",53,0.00653192013803303
+"46","LIVER","Healthy","CD56 dim NK cells (C2)",169,0.0208281981759921
+"47","LIVER","Healthy","CD56 high NK cells (C12)",291,0.035863938871087
+"48","LIVER","Healthy","ACKR1 Endothelial cells (C9)",545,0.0671678580231698
+"49","LIVER","Healthy","TAGLN Endothelial cells (C16)",234,0.0288390436282968
+"50","LIVER","Healthy","Blood vessels (C6)",871,0.107345329060882
+"51","LIVER","Healthy","Hepatocytes (C20)",357,0.043998028099581
+"52","LIVER","Healthy","Liver Ductal cells (C18)",1110,0.136800591570126
+"53","LIVER","Healthy","Erythroid cells (C17)",391,0.0481883164900173
+"54","LIVER","Healthy","Mast cells (C15)",278,0.0342617697806261
+"55","LIVER","Healthy","Platelets (C28)",1,0.000123243776189302
+"56","LIVER","No_fibrosis","Naïve-Activated T cells (C1)",217,0.0497022446174989
+"57","LIVER","No_fibrosis","CD8 Effector Memory (C0)",970,0.222171323866239
+"58","LIVER","No_fibrosis","CD8 Cytotoxic T cells (C4)",210,0.0480989464040312
+"59","LIVER","No_fibrosis","CD4 T cells (C7)",448,0.102611085661933
+"60","LIVER","No_fibrosis","CD4 Proliferating T cells (C21)",45,0.0103069170865781
+"61","LIVER","No_fibrosis","Naïve B cells (C8)",135,0.0309207512597343
+"62","LIVER","No_fibrosis","B cells (C27)",7,0.00160329821346771
+"63","LIVER","No_fibrosis","Plasma cells_1 (C19)",31,0.00710032065964269
+"64","LIVER","No_fibrosis","CD14 Monocytes (C3)",201,0.0460375629867155
+"65","LIVER","No_fibrosis","CD16 Monocytes (C11)",125,0.0286303252404947
+"66","LIVER","No_fibrosis","Macrophage (C5)",77,0.0176362803481448
+"67","LIVER","No_fibrosis","Myeloid Dendritic cells (C10)",154,0.0352725606962895
+"68","LIVER","No_fibrosis","Plasmacytoid dendritic cells (C22)",58,0.0132844709115896
+"69","LIVER","No_fibrosis","Neutrophil (C14)",156,0.0357306459001374
+"70","LIVER","No_fibrosis","CD56 dim NK cells (C2)",378,0.0865781035272561
+"71","LIVER","No_fibrosis","CD56 high NK cells (C12)",405,0.0927622537792029
+"72","LIVER","No_fibrosis","Fibroblasts (C13)",3,0.000687127805771874
+"73","LIVER","No_fibrosis","Adipocytes_2 (C26)",4,0.000916170407695831
+"74","LIVER","No_fibrosis","ACKR1 Endothelial cells (C9)",59,0.0135135135135135
+"75","LIVER","No_fibrosis","TAGLN Endothelial cells (C16)",46,0.0105359596885021
+"76","LIVER","No_fibrosis","Blood vessels (C6)",82,0.0187814933577645
+"77","LIVER","No_fibrosis","Hepatocytes (C20)",115,0.0263398992212552
+"78","LIVER","No_fibrosis","Liver Ductal cells (C18)",57,0.0130554283096656
+"79","LIVER","No_fibrosis","Erythroid cells (C17)",317,0.0726065048098946
+"80","LIVER","No_fibrosis","Mast cells (C15)",58,0.0132844709115896
+"81","LIVER","No_fibrosis","Platelets (C28)",8,0.00183234081539166
+"82","PBMC","Fibrosis","Naïve-Activated T cells (C1)",8028,0.29337816108756
+"83","PBMC","Fibrosis","CD8 Effector Memory (C0)",398,0.0145446572138576
+"84","PBMC","Fibrosis","CD8 Cytotoxic T cells (C4)",4707,0.172014325391025
+"85","PBMC","Fibrosis","CD4 T cells (C7)",713,0.0260561321444233
+"86","PBMC","Fibrosis","CD4 Proliferating T cells (C21)",127,0.00464113433708522
+"87","PBMC","Fibrosis","Naïve B cells (C8)",2261,0.0826268089460605
+"88","PBMC","Fibrosis","B cells (C27)",182,0.00665107440432685
+"89","PBMC","Fibrosis","Plasma cells_1 (C19)",70,0.00255810554012571
+"90","PBMC","Fibrosis","CD14 Monocytes (C3)",5182,0.189372898699021
+"91","PBMC","Fibrosis","CD16 Monocytes (C11)",1640,0.0599327583686595
+"92","PBMC","Fibrosis","Macrophage (C5)",22,0.000803976026896653
+"93","PBMC","Fibrosis","Myeloid Dendritic cells (C10)",249,0.00909954684987575
+"94","PBMC","Fibrosis","Plasmacytoid dendritic cells (C22)",90,0.00328899283730449
+"95","PBMC","Fibrosis","TREM2 Dendritic cells (C23)",12,0.000438532378307265
+"96","PBMC","Fibrosis","Neutrophil (C14)",172,0.00628563075573747
+"97","PBMC","Fibrosis","CD56 dim NK cells (C2)",2787,0.101849144861862
+"98","PBMC","Fibrosis","CD56 high NK cells (C12)",129,0.0047142230668031
+"99","PBMC","Fibrosis","Fibroblasts (C13)",51,0.00186376260780588
+"100","PBMC","Fibrosis","Mesothelial cells (C24)",2,7.30887297178775e-05
+"101","PBMC","Fibrosis","Adipocytes_2 (C26)",1,3.65443648589388e-05
+"102","PBMC","Fibrosis","ACKR1 Endothelial cells (C9)",13,0.000475076743166204
+"103","PBMC","Fibrosis","TAGLN Endothelial cells (C16)",23,0.000840520391755591
+"104","PBMC","Fibrosis","Blood vessels (C6)",16,0.00058470983774302
+"105","PBMC","Fibrosis","Erythroid cells (C17)",247,0.00902645812015787
+"106","PBMC","Fibrosis","Mast cells (C15)",147,0.005372021634264
+"107","PBMC","Fibrosis","Platelets (C28)",95,0.00347171466159918
+"108","PBMC","Healthy","Naïve-Activated T cells (C1)",463,0.36087295401403
+"109","PBMC","Healthy","CD8 Effector Memory (C0)",22,0.0171473109898675
+"110","PBMC","Healthy","CD8 Cytotoxic T cells (C4)",86,0.0670303975058457
+"111","PBMC","Healthy","CD4 T cells (C7)",38,0.029618082618862
+"112","PBMC","Healthy","CD4 Proliferating T cells (C21)",23,0.0179267342166797
+"113","PBMC","Healthy","Naïve B cells (C8)",102,0.0795011691348402
+"114","PBMC","Healthy","B cells (C27)",3,0.00233826968043648
+"115","PBMC","Healthy","Plasma cells_1 (C19)",38,0.029618082618862
+"116","PBMC","Healthy","CD14 Monocytes (C3)",284,0.221356196414653
+"117","PBMC","Healthy","CD16 Monocytes (C11)",18,0.0140296180826189
+"118","PBMC","Healthy","Myeloid Dendritic cells (C10)",18,0.0140296180826189
+"119","PBMC","Healthy","Plasmacytoid dendritic cells (C22)",8,0.00623538581449727
+"120","PBMC","Healthy","Neutrophil (C14)",9,0.00701480904130943
+"121","PBMC","Healthy","CD56 dim NK cells (C2)",38,0.029618082618862
+"122","PBMC","Healthy","CD56 high NK cells (C12)",2,0.00155884645362432
+"123","PBMC","Healthy","Fibroblasts (C13)",49,0.0381917381137958
+"124","PBMC","Healthy","Adipocytes_1 (C25)",1,0.000779423226812159
+"125","PBMC","Healthy","ACKR1 Endothelial cells (C9)",5,0.00389711613406079
+"126","PBMC","Healthy","TAGLN Endothelial cells (C16)",16,0.0124707716289945
+"127","PBMC","Healthy","Blood vessels (C6)",16,0.0124707716289945
+"128","PBMC","Healthy","Erythroid cells (C17)",16,0.0124707716289945
+"129","PBMC","Healthy","Mast cells (C15)",17,0.0132501948558067
+"130","PBMC","Healthy","Platelets (C28)",11,0.00857365549493375
+"131","PBMC","No_fibrosis","Naïve-Activated T cells (C1)",1618,0.318441251722102
+"132","PBMC","No_fibrosis","CD8 Effector Memory (C0)",17,0.00334579807124582
+"133","PBMC","No_fibrosis","CD8 Cytotoxic T cells (C4)",536,0.105491045069868
+"134","PBMC","No_fibrosis","CD4 T cells (C7)",187,0.036803778783704
+"135","PBMC","No_fibrosis","CD4 Proliferating T cells (C21)",20,0.00393623302499508
+"136","PBMC","No_fibrosis","Naïve B cells (C8)",506,0.0995866955323755
+"137","PBMC","No_fibrosis","B cells (C27)",21,0.00413304467624483
+"138","PBMC","No_fibrosis","Plasma cells_1 (C19)",14,0.00275536311749656
+"139","PBMC","No_fibrosis","CD14 Monocytes (C3)",1324,0.260578626254674
+"140","PBMC","No_fibrosis","CD16 Monocytes (C11)",275,0.0541232040936823
+"141","PBMC","No_fibrosis","Myeloid Dendritic cells (C10)",48,0.00944695925998819
+"142","PBMC","No_fibrosis","Plasmacytoid dendritic cells (C22)",15,0.00295217476874631
+"143","PBMC","No_fibrosis","Neutrophil (C14)",30,0.00590434953749262
+"144","PBMC","No_fibrosis","CD56 dim NK cells (C2)",435,0.085613068293643
+"145","PBMC","No_fibrosis","CD56 high NK cells (C12)",14,0.00275536311749656
+"146","PBMC","No_fibrosis","Fibroblasts (C13)",1,0.000196811651249754
+"147","PBMC","No_fibrosis","Mast cells (C15)",8,0.00157449320999803
+"148","PBMC","No_fibrosis","Platelets (C28)",12,0.00236173981499705
+"149","SAT","Fibrosis","Naïve-Activated T cells (C1)",193,0.0141298777362911
+"150","SAT","Fibrosis","CD8 Effector Memory (C0)",2702,0.197818288308075
+"151","SAT","Fibrosis","CD8 Cytotoxic T cells (C4)",189,0.0138370305293213
+"152","SAT","Fibrosis","CD4 T cells (C7)",604,0.0442199282524343
+"153","SAT","Fibrosis","CD4 Proliferating T cells (C21)",85,0.00622300314810747
+"154","SAT","Fibrosis","Naïve B cells (C8)",163,0.0119335236840179
+"155","SAT","Fibrosis","B cells (C27)",7,0.000512482612197086
+"156","SAT","Fibrosis","Plasma cells_1 (C19)",50,0.00366059008712204
+"157","SAT","Fibrosis","CD14 Monocytes (C3)",407,0.0297972033091734
+"158","SAT","Fibrosis","CD16 Monocytes (C11)",489,0.0358005710520536
+"159","SAT","Fibrosis","Macrophage (C5)",1940,0.142030895380335
+"160","SAT","Fibrosis","Myeloid Dendritic cells (C10)",710,0.051980379237133
+"161","SAT","Fibrosis","Plasmacytoid dendritic cells (C22)",60,0.00439270810454645
+"162","SAT","Fibrosis","TREM2 Dendritic cells (C23)",381,0.02789369646387
+"163","SAT","Fibrosis","Neutrophil (C14)",206,0.0150816311589428
+"164","SAT","Fibrosis","CD56 dim NK cells (C2)",686,0.0502232959953144
+"165","SAT","Fibrosis","CD56 high NK cells (C12)",193,0.0141298777362911
+"166","SAT","Fibrosis","Fibroblasts (C13)",764,0.0559338165312248
+"167","SAT","Fibrosis","Mesothelial cells (C24)",16,0.00117138882787905
+"168","SAT","Fibrosis","Adipocytes_1 (C25)",52,0.00380701369060693
+"169","SAT","Fibrosis","Adipocytes_2 (C26)",278,0.0203528808843986
+"170","SAT","Fibrosis","ACKR1 Endothelial cells (C9)",871,0.063767479317666
+"171","SAT","Fibrosis","TAGLN Endothelial cells (C16)",507,0.0371183834834175
+"172","SAT","Fibrosis","Blood vessels (C6)",1650,0.120799472875027
+"173","SAT","Fibrosis","Erythroid cells (C17)",120,0.00878541620909291
+"174","SAT","Fibrosis","Mast cells (C15)",334,0.0244527417819753
+"175","SAT","Fibrosis","Platelets (C28)",2,0.000146423603484882
+"176","SAT","Healthy","Naïve-Activated T cells (C1)",5,0.00305623471882641
+"177","SAT","Healthy","CD8 Effector Memory (C0)",36,0.0220048899755501
+"178","SAT","Healthy","CD8 Cytotoxic T cells (C4)",7,0.00427872860635697
+"179","SAT","Healthy","CD4 T cells (C7)",17,0.0103911980440098
+"180","SAT","Healthy","CD4 Proliferating T cells (C21)",5,0.00305623471882641
+"181","SAT","Healthy","Plasma cells_1 (C19)",5,0.00305623471882641
+"182","SAT","Healthy","Plasma cells_3 (C30)",18,0.0110024449877751
+"183","SAT","Healthy","CD14 Monocytes (C3)",22,0.0134474327628362
+"184","SAT","Healthy","CD16 Monocytes (C11)",23,0.0140586797066015
+"185","SAT","Healthy","Macrophage (C5)",9,0.00550122249388753
+"186","SAT","Healthy","Myeloid Dendritic cells (C10)",18,0.0110024449877751
+"187","SAT","Healthy","Plasmacytoid dendritic cells (C22)",1,0.000611246943765281
+"188","SAT","Healthy","TREM2 Dendritic cells (C23)",5,0.00305623471882641
+"189","SAT","Healthy","Neutrophil (C14)",7,0.00427872860635697
+"190","SAT","Healthy","CD56 dim NK cells (C2)",22,0.0134474327628362
+"191","SAT","Healthy","CD56 high NK cells (C12)",1,0.000611246943765281
+"192","SAT","Healthy","Fibroblasts (C13)",166,0.101466992665037
+"193","SAT","Healthy","Adipocytes_1 (C25)",222,0.135696821515892
+"194","SAT","Healthy","Adipocytes_2 (C26)",6,0.00366748166259169
+"195","SAT","Healthy","ACKR1 Endothelial cells (C9)",380,0.232273838630807
+"196","SAT","Healthy","TAGLN Endothelial cells (C16)",79,0.0482885085574572
+"197","SAT","Healthy","Blood vessels (C6)",561,0.342909535452323
+"198","SAT","Healthy","Erythroid cells (C17)",10,0.00611246943765281
+"199","SAT","Healthy","Mast cells (C15)",11,0.00672371638141809
+"200","SAT","No_fibrosis","Naïve-Activated T cells (C1)",8,0.00807265388496468
+"201","SAT","No_fibrosis","CD8 Effector Memory (C0)",240,0.24217961654894
+"202","SAT","No_fibrosis","CD8 Cytotoxic T cells (C4)",29,0.029263370332997
+"203","SAT","No_fibrosis","CD4 T cells (C7)",78,0.0787083753784057
+"204","SAT","No_fibrosis","CD4 Proliferating T cells (C21)",6,0.00605449041372351
+"205","SAT","No_fibrosis","Naïve B cells (C8)",14,0.0141271442986882
+"206","SAT","No_fibrosis","B cells (C27)",1,0.00100908173562059
+"207","SAT","No_fibrosis","Plasma cells_1 (C19)",9,0.00908173562058527
+"208","SAT","No_fibrosis","CD14 Monocytes (C3)",21,0.0211907164480323
+"209","SAT","No_fibrosis","CD16 Monocytes (C11)",41,0.041372351160444
+"210","SAT","No_fibrosis","Macrophage (C5)",154,0.15539858728557
+"211","SAT","No_fibrosis","Myeloid Dendritic cells (C10)",40,0.0403632694248234
+"212","SAT","No_fibrosis","Plasmacytoid dendritic cells (C22)",6,0.00605449041372351
+"213","SAT","No_fibrosis","Neutrophil (C14)",25,0.0252270433905146
+"214","SAT","No_fibrosis","CD56 dim NK cells (C2)",89,0.0898082744702321
+"215","SAT","No_fibrosis","CD56 high NK cells (C12)",25,0.0252270433905146
+"216","SAT","No_fibrosis","Fibroblasts (C13)",7,0.0070635721493441
+"217","SAT","No_fibrosis","Adipocytes_2 (C26)",21,0.0211907164480323
+"218","SAT","No_fibrosis","ACKR1 Endothelial cells (C9)",19,0.0191725529767911
+"219","SAT","No_fibrosis","TAGLN Endothelial cells (C16)",28,0.0282542885973764
+"220","SAT","No_fibrosis","Blood vessels (C6)",94,0.094853683148335
+"221","SAT","No_fibrosis","Erythroid cells (C17)",2,0.00201816347124117
+"222","SAT","No_fibrosis","Mast cells (C15)",33,0.0332996972754793
+"223","SAT","No_fibrosis","Platelets (C28)",1,0.00100908173562059
+"224","VAT","Fibrosis","Naïve-Activated T cells (C1)",3321,0.0965014238391352
+"225","VAT","Fibrosis","CD8 Effector Memory (C0)",6666,0.193700238275121
+"226","VAT","Fibrosis","CD8 Cytotoxic T cells (C4)",1513,0.0439646655430929
+"227","VAT","Fibrosis","CD4 T cells (C7)",1809,0.0525658162375777
+"228","VAT","Fibrosis","CD4 Proliferating T cells (C21)",169,0.00491079211948626
+"229","VAT","Fibrosis","Naïve B cells (C8)",739,0.0214738187946766
+"230","VAT","Fibrosis","B cells (C27)",12,0.00034869529842506
+"231","VAT","Fibrosis","Plasma cells_1 (C19)",111,0.0032254315104318
+"232","VAT","Fibrosis","Plasma cells_3 (C30)",1,2.90579415354216e-05
+"233","VAT","Fibrosis","CD14 Monocytes (C3)",1313,0.0381530772360086
+"234","VAT","Fibrosis","CD16 Monocytes (C11)",1200,0.034869529842506
+"235","VAT","Fibrosis","Macrophage (C5)",3646,0.105945254838147
+"236","VAT","Fibrosis","Myeloid Dendritic cells (C10)",1301,0.0378043819375835
+"237","VAT","Fibrosis","Plasmacytoid dendritic cells (C22)",116,0.00337072121810891
+"238","VAT","Fibrosis","TREM2 Dendritic cells (C23)",413,0.0120009298541291
+"239","VAT","Fibrosis","Neutrophil (C14)",895,0.0260068576742024
+"240","VAT","Fibrosis","CD56 dim NK cells (C2)",3035,0.0881908525600047
+"241","VAT","Fibrosis","CD56 high NK cells (C12)",531,0.0154297669553089
+"242","VAT","Fibrosis","Fibroblasts (C13)",1846,0.0536409600743883
+"243","VAT","Fibrosis","Mesothelial cells (C24)",605,0.0175800546289301
+"244","VAT","Fibrosis","Adipocytes_1 (C25)",15,0.000435869123031324
+"245","VAT","Fibrosis","Adipocytes_2 (C26)",96,0.00278956238740048
+"246","VAT","Fibrosis","ACKR1 Endothelial cells (C9)",1593,0.0462893008659267
+"247","VAT","Fibrosis","TAGLN Endothelial cells (C16)",562,0.016330563142907
+"248","VAT","Fibrosis","Blood vessels (C6)",1549,0.0450107514383681
+"249","VAT","Fibrosis","Erythroid cells (C17)",577,0.0167664322659383
+"250","VAT","Fibrosis","Mast cells (C15)",763,0.0221712093915267
+"251","VAT","Fibrosis","Platelets (C28)",17,0.000493985006102168
+"252","VAT","Healthy","Naïve-Activated T cells (C1)",269,0.0537033339988022
+"253","VAT","Healthy","CD8 Effector Memory (C0)",34,0.00678778199241366
+"254","VAT","Healthy","CD8 Cytotoxic T cells (C4)",54,0.0107805949291276
+"255","VAT","Healthy","CD4 T cells (C7)",53,0.0105809542822919
+"256","VAT","Healthy","CD4 Proliferating T cells (C21)",34,0.00678778199241366
+"257","VAT","Healthy","Naïve B cells (C8)",29,0.00578957875823518
+"258","VAT","Healthy","Plasma cells_1 (C19)",131,0.0261529247354761
+"259","VAT","Healthy","Plasma cells_3 (C30)",18,0.00359353164304252
+"260","VAT","Healthy","CD14 Monocytes (C3)",78,0.0155719704531843
+"261","VAT","Healthy","CD16 Monocytes (C11)",17,0.00339389099620683
+"262","VAT","Healthy","Macrophage (C5)",9,0.00179676582152126
+"263","VAT","Healthy","Myeloid Dendritic cells (C10)",21,0.00419245358354961
+"264","VAT","Healthy","Plasmacytoid dendritic cells (C22)",4,0.000798562587342783
+"265","VAT","Healthy","TREM2 Dendritic cells (C23)",16,0.00319425034937113
+"266","VAT","Healthy","Neutrophil (C14)",54,0.0107805949291276
+"267","VAT","Healthy","CD56 dim NK cells (C2)",60,0.0119784388101417
+"268","VAT","Healthy","CD56 high NK cells (C12)",10,0.00199640646835696
+"269","VAT","Healthy","Fibroblasts (C13)",1248,0.249151527250948
+"270","VAT","Healthy","Mesothelial cells (C24)",31,0.00618886005190657
+"271","VAT","Healthy","Adipocytes_1 (C25)",228,0.0455180674785386
+"272","VAT","Healthy","Adipocytes_2 (C26)",8,0.00159712517468557
+"273","VAT","Healthy","ACKR1 Endothelial cells (C9)",494,0.0986224795368337
+"274","VAT","Healthy","TAGLN Endothelial cells (C16)",436,0.0870433220203633
+"275","VAT","Healthy","Blood vessels (C6)",1582,0.315831503294071
+"276","VAT","Healthy","Erythroid cells (C17)",76,0.0151726891595129
+"277","VAT","Healthy","Mast cells (C15)",12,0.00239568776202835
+"278","VAT","Healthy","Platelets (C28)",3,0.000598921940507087
+"279","VAT","No_fibrosis","Naïve-Activated T cells (C1)",1697,0.237708362515758
+"280","VAT","No_fibrosis","CD8 Effector Memory (C0)",1744,0.244291917635523
+"281","VAT","No_fibrosis","CD8 Cytotoxic T cells (C4)",181,0.0253536909931363
+"282","VAT","No_fibrosis","CD4 T cells (C7)",368,0.0515478358313489
+"283","VAT","No_fibrosis","CD4 Proliferating T cells (C21)",35,0.00490264742961199
+"284","VAT","No_fibrosis","Naïve B cells (C8)",164,0.0229724050987533
+"285","VAT","No_fibrosis","B cells (C27)",2,0.000280151281692114
+"286","VAT","No_fibrosis","Plasma cells_1 (C19)",13,0.00182098333099874
+"287","VAT","No_fibrosis","CD14 Monocytes (C3)",149,0.0208712704860625
+"288","VAT","No_fibrosis","CD16 Monocytes (C11)",190,0.0266143717607508
+"289","VAT","No_fibrosis","Macrophage (C5)",749,0.104916654993697
+"290","VAT","No_fibrosis","Myeloid Dendritic cells (C10)",187,0.0261941448382126
+"291","VAT","No_fibrosis","Plasmacytoid dendritic cells (C22)",24,0.00336181538030537
+"292","VAT","No_fibrosis","TREM2 Dendritic cells (C23)",16,0.00224121025353691
+"293","VAT","No_fibrosis","Neutrophil (C14)",231,0.0323574730354391
+"294","VAT","No_fibrosis","CD56 dim NK cells (C2)",484,0.0677966101694915
+"295","VAT","No_fibrosis","CD56 high NK cells (C12)",171,0.0239529345846757
+"296","VAT","No_fibrosis","Fibroblasts (C13)",44,0.0061633281972265
+"297","VAT","No_fibrosis","Mesothelial cells (C24)",37,0.0051827987113041
+"298","VAT","No_fibrosis","Adipocytes_2 (C26)",2,0.000280151281692114
+"299","VAT","No_fibrosis","ACKR1 Endothelial cells (C9)",251,0.0351589858523603
+"300","VAT","No_fibrosis","TAGLN Endothelial cells (C16)",33,0.00462249614791988
+"301","VAT","No_fibrosis","Blood vessels (C6)",128,0.0179296820282953
+"302","VAT","No_fibrosis","Erythroid cells (C17)",9,0.00126068076761451
+"303","VAT","No_fibrosis","Mast cells (C15)",224,0.0313769435495167
+"304","VAT","No_fibrosis","Platelets (C28)",6,0.000840453845076341
