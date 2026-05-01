@@ -1,5 +1,21 @@
+################################################################################
+# Script name: 32_ExtendedDataFigure7.R
+#
+#   TCR Repertoire Alluvial Analysis Across Tissues
+#
+# - scRepertoire-based TCR analysis
+# - SAT, VAT, PBMC, and LIVER samples
+# - Healthy, No Fibrosis, and Fibrosis groups
+# - Per-patient alluvial plots of top 5 clonotypes
+#
+# Input:
+#   - CellRanger TCR contig CSV files
+#
+# Output:
+#   - Alluvial plots (TIFF and PDF)
+#
+################################################################################
 
-library(Seurat)
 library(scRepertoire)
 library(tidyverse)
 library(ggplot2)

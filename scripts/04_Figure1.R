@@ -24,7 +24,6 @@
 #  - UMAP plots coloured by annotated cell types
 #  - Stacked bar plots showing tissue contributions per cluster
 #  - Proportion plots of cell types across tissues and disease stages
-#  - Dot plots of top RNA and ADT markers used to support cluster annotation
 #
 # Outputs:
 #  - Annotated Seurat object with cell‑type metadata
@@ -347,97 +346,5 @@ setwd("/data/home/hdx044/plots/seurat/allTissue")
 tiff("allTissue_cell_type_Proportion_by_tissue_stage.tiff", width=25, height=25, units="cm", res=600, compression="lzw")
 print(ggp)
 dev.off()
-
-#### Extended data Fig1.a ####
-
-top_markers <- read.csv(
-  "/data/home/hdx044/files/seurat/allTissue/cluster_markers_RNA_top20_allTissue.csv",
-  stringsAsFactors = FALSE
-)
-
-top5_markers <- top_markers %>%
-  group_by(cluster) %>%
-  slice_max(order_by = avg_log2FC, n = 5, with_ties = FALSE) %>%
-  ungroup()
-
-DefaultAssay(SeuObj) <- "RNA"
-Idents(SeuObj) <- "cluster"
-
-ggp <- DotPlot2(SeuObj, features = unique(top5_markers$gene), color_scheme = "BuRd")
-
-ggp <- ggp + 
- labs(title = "Top5 genes of each cluster")+
- theme_classic(base_size = 12) +
- theme(
-  axis.text.x = element_text(angle = 90, hjust = 1),
-  axis.line = element_line(color = "black"),
-  legend.position = "right",
-  legend.direction = "vertical",
-  legend.title = element_text(size = 12),
-  legend.text = element_text(size = 12),
-  legend.key.size = unit(0.8, "lines"),  # reduce point size in legend
-  legend.spacing.y = unit(1, "cm")     # reduce spacing between items
- ) +
- guides(color = guide_legend(override.aes = list(size = 3), ncol = 1))  # one column legend, small dots
-
-ggp
-
-# Save high-resolution SVG
-ggsave(
- filename = "Top5genesofeachcluster.svg",
- plot = ggp,
- device = "svg",
- path = "/data/home/hdx044/plots/seurat/allTissue",
- width = 8,     
- height = 20,
- units = "in",
- dpi = 600
-)
-
-
-#### Extended data Fig1.b ####
-
-top_markersADT <- read.csv(
-  "/data/home/hdx044/files/seurat/allTissue/cluster_markers_ADT_top10_allTissue.csv",
-  stringsAsFactors = FALSE
-)
-
-top3_markersADT <- top_markersADT %>%
-  group_by(cluster) %>%
-  slice_max(order_by = avg_log2FC, n = 3, with_ties = FALSE) %>%
-  ungroup()
-
-DefaultAssay(SeuObj) <- "ADTonly"
-
-ggp <- DotPlot2(SeuObj, features = unique(top3_markersADT$gene), color_scheme = "BuRd")
-
-ggp <- ggp + 
- labs(title = "Top3 ADTs of each cluster")+
- theme_classic(base_size = 12) +
- theme(
-  axis.text.x = element_text(angle = 90, hjust = 1),
-  axis.line = element_line(color = "black"),
-  legend.position = "right",
-  legend.direction = "vertical",
-  legend.title = element_text(size = 12),
-  legend.text = element_text(size = 12),
-  legend.key.size = unit(0.8, "lines"),  # reduce point size in legend
-  legend.spacing.y = unit(1, "cm")     # reduce spacing between items
- ) +
- guides(color = guide_legend(override.aes = list(size = 3), ncol = 1))  # one column legend, small dots
-
-ggp
-
-# Save high-resolution SVG
-ggsave(
- filename = "Top3ADTsofeachcluster.svg",
- plot = ggp,
- device = "svg",
- path = "/data/home/hdx044/plots/seurat/allTissue",
- width = 8,     
- height = 10,
- units = "in",
- dpi = 600
-)
 
 # End of the script

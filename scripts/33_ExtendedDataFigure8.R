@@ -1,5 +1,5 @@
 ################################################################################
-# Script name: ExtendedDataFigure8.R
+# Script name: 33_ExtendedDataFigure8.R
 #
 # CellChat heatmap visualisation of differential signalling
 # across disease states in LIVER, SAT, and VAT
