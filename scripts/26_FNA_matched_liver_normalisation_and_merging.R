@@ -1,8 +1,8 @@
 ###############################################################################
-# Script name: Liver_CITEseq_normalisation_and_merging.R
+# Script name: FNA_matched_liver_normalisation_and_merging.R
 #
 # Purpose:
-#   - Prepare liver CITEseq data for downstream analysis
+#   - Prepare FNA matched liver CITEseq data for downstream analysis
 #   - Add liver-specific metadata (tissue and patient ID)
 #   - Perform RNA and ADT normalisation, variable feature selection, and scaling
 #   - Integrate liver samples with matched control tissues processed

@@ -1,3 +1,30 @@
+################################################################################
+# Script name: 30_ExtendedDataFigure3.R
+#
+# Quantification of tissue‑specific T cell subsets
+# from a Seurat single‑cell RNA‑seq object
+#
+# (a) PBMC CXCR3⁺ TBX21⁺ T cells
+#     – counts and percentage per patient
+#     – stratified by disease stage
+#
+# (b) Liver CD8⁺ CD69⁺ CXCR6⁺ T cells
+#     – counts and percentage per patient
+#     – stratified by disease stage
+#
+# Definitions:
+#   Positive cells defined as gene expression > 0.25
+#   Percentages calculated relative to total cells
+#     within the corresponding tissue
+#
+# Input:
+#   Seurat object: SeuObjx.rds
+#
+# Output:
+#   CSV files for plotting in GraphPad Prism 11
+#
+################################################################################
+
 # Load packages
 library(Seurat)
 library(tidyverse)
@@ -39,7 +66,7 @@ cxcr3_tbx21_summary <- expr_df %>%
 
 print(cxcr3_tbx21_summary)
 
-#### Extended Data Figure 3a ####
+## Extended Data Figure 3a ##
 write.csv(
   cxcr3_tbx21_summary,
   "/data/home/hdx044/MASLD_fibrosis/files/PBMC_CXCR3_TBX21_counts_and_percentage_per_patient.csv",
@@ -81,17 +108,13 @@ liver_cd8_cd69_cxcr6_summary <- expr_df %>%
 
 print(liver_cd8_cd69_cxcr6_summary)
 
-#### Extended Data Figure 3b ####
+## Extended Data Figure 3b ##
 write.csv(
   liver_cd8_cd69_cxcr6_summary,
   "/data/home/hdx044/MASLD_fibrosis/files/LIVER_CD8_CD69_CXCR6_counts_and_percentage_per_patient.csv",
   row.names = FALSE
 )
 # Data were plotted in GraphPad Prism 11.
-
-
-# End of the script
-
 
 
 # End of the script
