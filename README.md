@@ -6,4 +6,4 @@ The dataset comprises **80 tissue samples from 20 patients undergoing bariatric 
 
 The analyses implemented in this repository integrate CITE seq and TCR seq data to identify **clonally expanded effector CD8⁺ T cells shared between liver and adipose tissues during early MASLD**, characterise their interactions with liver endothelial cells, and quantify changes in clonal expansion and diversity following disease regression. 
 
-Scripts are organised by figure and analysis stage, enabling full traceability from raw sequencing outputs to the figures and results presented in the manuscript.
+Scripts and files are organised by figure and analysis stage, enabling traceability from raw sequencing outputs to the figures and results presented in the manuscript.
