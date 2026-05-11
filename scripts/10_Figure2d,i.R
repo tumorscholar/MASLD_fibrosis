@@ -1,5 +1,5 @@
 ###############################################################################
-# Script name: 10_Figure2d,g.R
+# Script name: 10_Figure2d,i.R
 #
 # Description:
 # This script performs multi‑tissue T‑cell receptor (TCR) repertoire analysis
@@ -315,7 +315,7 @@ seurat_obj <- combineExpression(combined.TCR,
 clonalOccupy(seurat_obj, 
              x.axis = "seurat_clusters", exportTable = NULL)
 
-#### Fig2.g #### 
+#### Fig2.i #### 
 metadata <- clonalOccupy(seurat_obj, 
              x.axis = "seurat_clusters", exportTable = T)
 

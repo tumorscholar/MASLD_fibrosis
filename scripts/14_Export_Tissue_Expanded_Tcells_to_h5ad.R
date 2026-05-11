@@ -37,6 +37,26 @@ seurat_obj_subset <- subset(
 
 table(seurat_obj_subset$expanded_shared_class)
 
+# Take metadata
+meta_df <- seurat_obj_subset@meta.data
+
+# Extract core barcode (AAAC...-1)
+core <- sub("_.*$", "", rownames(meta_df))
+
+# Build AnnData-style barcode
+meta_df$barcode_match <- paste0(meta_df$Sample, "_", core)
+
+# Put it FIRST column
+meta_df <- meta_df[, c("barcode_match", setdiff(colnames(meta_df), "barcode_match"))]
+
+# Write FULL metadata
+write.csv(
+  meta_df,
+  "/data/Blizard-AlazawiLab/rk/python/BarcodesTcellsPython.csv",
+  row.names = FALSE,
+  quote = FALSE
+)
+
 # Export to AnnData (.h5ad)
 as.anndata(x = seurat_obj, file_path = "/data/Blizard-AlazawiLab/rk/seurat/", file_name = "TissueExpandedTcells.h5ad")
 

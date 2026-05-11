@@ -1,5 +1,5 @@
 ############################################################
-# Title: 12_Figure2h,i.R
+# Title: 12_Figure2g,h.R
 #
 # Purpose:
 # This script identifies autoaggressive and protective CD8 T-cell populations
@@ -7,8 +7,8 @@
 # versus non-expanded clonotypes across tissues, patients, and disease stages.
 #
 # Figures:
-# Fig2h – Autoaggressive CD8 T cells (CD8A+ CD69+ CXCR6+)
-# Fig2i – Protective CD8 T cells (CD8A+ CD69+ ITGAE−)
+# Fig2g – Autoaggressive CD8 T cells (CD8A+ CD69+ CXCR6+)
+# Fig2h – Protective CD8 T cells (CD8A+ CD69+ ITGAE−)
 #
 # Input:
 # Seurat object containing T cells with clonality annotations
@@ -34,7 +34,7 @@ library(tidyverse)
 # Load T cells object
 seurat_obj <- readRDS('/data/Blizard-AlazawiLab/rk/seurat/TcellObj.rds')
 
-#### Fig2h ####
+#### Fig2g ####
 DefaultAssay(seurat_obj) <- "RNA"
 
 # Identify autoaggressive CD8 T cells based on RNA expression
@@ -86,7 +86,7 @@ auto_percent_wide
 write_csv(auto_percent_wide, "/data/home/hdx044/files/screpertoire/AutoagressiveTcells_TissueStageWise.csv")
 
 
-#### Fig2i ####
+#### Fig2h ####
 DefaultAssay(seurat_obj) <- "RNA"
 
 # Define protective cells 
