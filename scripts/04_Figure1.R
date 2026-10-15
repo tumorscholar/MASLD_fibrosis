@@ -47,304 +47,262 @@ library(tidyr)
 library(ggpubfigs)
 library(SeuratExtend)
 library(colorspace)
+library(ggrepel)
 
-#Load seurat object
-SeuObj <- readRDS('/data/Blizard-AlazawiLab/rk/seurat/SeuObjx.rds')
+source("00_nature_style.R")
 
-# Make cluster label
-SeuObj$cluster <- paste0("C", as.character(SeuObj$seurat_clusters))
+# PUBLICATION THEME — define FIRST before any plots
+my_theme <- theme_nature(7) +
+  theme(
+    axis.text.x     = element_text(size = 7, color = "black"),
+    axis.text.y     = element_text(size = 7, color = "black"),
+    axis.title.x    = element_text(size = 8, color = "black", face = "bold"),
+    axis.title.y    = element_text(size = 8, color = "black", face = "bold"),
+    axis.line       = element_line(color = "black", linewidth = 0.4),
+    axis.ticks      = element_line(color = "black", linewidth = 0.4),
+    panel.background= element_rect(fill = "white", color = NA),
+    plot.background = element_rect(fill = "white", color = NA),
+    strip.text      = element_text(size = 7, face = "bold", color = "black"),
+    strip.background= element_rect(fill = "white", color = "black", linewidth = 0.4),
+    plot.title      = element_text(size = 8, face = "plain", color = "black", hjust = 0),
+    legend.position    = "right",
+    legend.direction   = "vertical",
+    legend.background  = element_rect(fill = "white", color = NA),
+    legend.title       = element_text(size = 7, face = "bold", color = "black"),
+    legend.text        = element_text(size = 7, color = "black"),
+    legend.key.size    = unit(0.7, "lines"),
+    legend.key         = element_rect(fill = "white", color = NA),
+    legend.spacing.y   = unit(0.15, "cm"),
+    legend.box.margin  = margin(2, 2, 2, 2),
+    plot.margin        = margin(4, 4, 4, 4, "pt")
+  )
 
-Idents(SeuObj) <- "cluster"
-
-# Arrange the clusters in increasing order
-Idents(SeuObj) <- "cluster"
-SeuObj@active.ident <- factor (SeuObj@active.ident,
-                                 levels = c('C0','C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12','C13','C14', 'C15', 'C16', 'C17', 'C18', 'C19', 'C20', 'C21', 'C22','C23', 'C24', 'C25', 'C26', 'C27', 'C28', 'C29', 'C30'))
-
-
-# Map from raw cluster ID -> cell type name
-cluster_to_type <- c(
- "1"  = "Naïve-Activated T cells",
- "0"  = "CD8 Effector Memory",
- "4"  = "CD8 Cytotoxic T cells",
- "7"  = "CD4 T cells",
- "21" = "CD4 Proliferating T cells",
- "8"  = "Naïve B cells",
- "27" = "B cells",
- "19" = "Plasma cells_1",
- "29" = "Plasma cells_2",
- "30" = "Plasma cells_3",
- "3"  = "CD14 Monocytes",
- "11" = "CD16 Monocytes",
- "5"  = "Macrophage",
- "10" = "Myeloid Dendritic cells",
- "14" = "Neutrophil",
- "22" = "Plasmacytoid dendritic cells",
- "23" = "TREM2 Dendritic cells",
- "2"  = "CD56 dim NK cells",
- "12" = "CD56 high NK cells",
- "13" = "Fibroblasts",
- "24" = "Mesothelial cells",
- "25" = "Adipocytes_1",
- "26" = "Adipocytes_2",
- "9"  = "ACKR1 Endothelial cells",
- "16" = "TAGLN Endothelial cells",
- "6"  = "Blood vessels",
- "20" = "Hepatocytes",
- "18" = "Liver Ductal cells",
- "17" = "Erythroid cells",
- "15" = "Mast cells",
- "28" = "Platelets"
-)
-
-# Create the cell_type column from the mapping
-raw_clusters <- as.character(SeuObj$seurat_clusters)
-SeuObj$cell_type <- unname(cluster_to_type[raw_clusters])
-
-# (Optional but recommended) flag any clusters not in the map
-missing_idx <- is.na(SeuObj$cell_type)
-if (any(missing_idx)) {
- warning("Some clusters are not in the mapping. They will be labeled as 'Unknown'.")
- SeuObj$cell_type[missing_idx] <- paste0("Unknown_", raw_clusters[missing_idx])
+# Save figure
+save_figure <- function(plot,
+                        filename,
+                        width_cm  = 18.3,
+                        height_cm = 12,
+                        path      = "/data/Blizard-AlazawiLab/rk/Tcell/figures/Figure1/") {
+  dir.create(path, showWarnings = FALSE, recursive = TRUE)
+  cairo_pdf(file.path(path, paste0(filename, ".pdf")),
+            width = width_cm/2.54, height = height_cm/2.54)
+  print(plot); dev.off()
+  
+  svglite::svglite(file.path(path, paste0(filename, ".svg")),
+                   width = width_cm/2.54, height = height_cm/2.54)
+  print(plot); dev.off()
+  
+  # type="cairo": on a headless node the default (Xlib) backend cannot render the
+  # Arial/showtext text and errors with "invalid font type"; cairo matches the PDF.
+  tiff(file.path(path, paste0(filename, ".tiff")),
+       width=width_cm, height=height_cm,
+       units="cm", res=600, compression="lzw", type="cairo")
+  print(plot); dev.off()
+  
+  message("Saved: ", filename)
 }
 
-# Create cell_type_with_cluster
-SeuObj$cell_type_with_cluster <- paste0(SeuObj$cell_type, " (", SeuObj$cluster, ")")
+# ---- Load integrated + clustered object (from script 03) --------------------
+SeuObj <- readRDS('/data/Blizard-AlazawiLab/rk/seurat/SeuObjV7.rds')
 
-
-# Plot UMAP
-Idents(SeuObj) <- "cell_type_with_cluster"
-
-# define a biologically meaningful order
-SeuObj$cell_type_with_cluster <- factor(
- SeuObj$cell_type_with_cluster,
- levels = c(
-  # T cells
-  "Naïve-Activated T cells (C1)",
-  "CD8 Effector Memory (C0)",
-  "CD8 Cytotoxic T cells (C4)",
-  "CD4 T cells (C7)",
-  "CD4 Proliferating T cells (C21)",
-  # B cells / Plasma
-  "Naïve B cells (C8)",
-  "B cells (C27)",
-  "Plasma cells_1 (C19)",
-  "Plasma cells_2 (C29)",
-  "Plasma cells_3 (C30)",
-  # Myeloid
-  "CD14 Monocytes (C3)",
-  "CD16 Monocytes (C11)",
-  "Macrophage (C5)",
-  "Myeloid Dendritic cells (C10)",
-  "Plasmacytoid dendritic cells (C22)",
-  "TREM2 Dendritic cells (C23)",
-  "Neutrophil (C14)",
-  # NK
-  "CD56 dim NK cells (C2)",
-  "CD56 high NK cells (C12)",
-  # Stromal
-  "Fibroblasts (C13)",
-  "Mesothelial cells (C24)",
-  "Adipocytes_1 (C25)",
-  "Adipocytes_2 (C26)",
-  # Endothelial
-  "ACKR1 Endothelial cells (C9)",
-  "TAGLN Endothelial cells (C16)",
-  "Blood vessels (C6)",
-  # Liver parenchyma
-  "Hepatocytes (C20)",
-  "Liver Ductal cells (C18)",
-  # Other
-  "Erythroid cells (C17)",
-  "Mast cells (C15)",
-  "Platelets (C28)"
- )
-)
-
-# Define stromal cell types
-stromal_types <- c("Fibroblasts (C13)", "Mesothelial cells (C24)", "Adipocytes_1 (C25)", "Adipocytes_2 (C26)")
-
-# Count total cells and stromal cells
-cell_counts <- table(SeuObj$cell_type_with_cluster)
-stromal_count <- sum(cell_counts[names(cell_counts) %in% stromal_types])
-
-# Calculate percentage
-stromal_percentage <- stromal_count / sum(cell_counts) * 100
-
-# Print results
-cat("Stromal cells:", stromal_count, "of", sum(cell_counts), 
-    "(", round(stromal_percentage, 2), "% )\n")
-
-
-# Define biologically grouped color palette
-my_colors <- c(
- # T cells (blue/red tones)
- "#a50f15", "#de2d26", "#fb6a4a", "#fc9272", "#fcbba1",
- 
- # B / Plasma (blue tones)
- "#08519c", "#3182bd", "#6baed6", "#9ecae1", "#c6dbef",
- 
- # Myeloid (greens)
- "#006d2c", "#31a354", "#74c476", "#a1d99b", "#c7e9c0",
- "#e5f5e0", "#edf8e9",
- 
- # NK (purple)
- "#6a51a3", "#9e9ac8",
- 
- # Stromal (brown/tan)
- "#8c510a", "#d8b365", "#f6e8c3", "#c7eae5",
- 
- # Endothelial (teal)
- "#01665e", "#5ab4ac", "#35978f",
- 
- # Parenchymal (orange)
- "#d95f0e", "#fdd0a2",
- 
- # Other (grey)
- "#636363", "#969696", "#cccccc"
-)
-
-#### Fig1.b ####
-# Ploting UMAP for cell_type_with_cluster
-
-ggp <- DimPlot(SeuObj, reduction = "umap", raster = FALSE, label = F, group.by = "cell_type_with_cluster",
-               cols = my_colors) +
- ggtitle("All tissue harmony integrated clusters") +
- theme_classic(base_size = 12) +
- theme(
-  axis.text.x = element_text(angle = 90, hjust = 1),
-  axis.line = element_line(color = "black"),
-  plot.title = element_blank(),
-  legend.position = "right",
-  legend.direction = "vertical",
-  legend.title = element_text(size = 12),
-  legend.text = element_text(size = 12),
-  legend.key.size = unit(0.8, "lines"),  # reduce point size in legend
-  legend.spacing.y = unit(0.8, "cm")     # reduce spacing between items
- ) +
- guides(color = guide_legend(override.aes = list(size = 3), ncol = 1))  # one column legend, small dots
-
-ggp
-
-# Final TIFF for journal
-setwd("/data/home/hdx044/plots/seurat/allTissue")
-tiff("allTissue_cell_type.tiff", width=22, height=15, units="cm", res=600, compression="lzw")
-print(ggp)
-dev.off()
-
-setwd("/data/home/hdx044/plots/seurat/allTissue")
-svg("allTissue_cell_type1.svg", width = 22, height = 15)   # width/height in cm by default for svg()
-print(ggp)
-dev.off()
-
-#### Fig1.c ####
-#count plots Tissue wise
-
+# ---- Cluster labels (C0 ... Cn), derived from the data (no hard-coded count) -
+n_clusters     <- length(levels(as.factor(SeuObj$seurat_clusters)))   # 34 -> C0..C33
+cluster_levels <- paste0("C", 0:(n_clusters - 1))
+SeuObj$cluster <- paste0("C", as.character(SeuObj$seurat_clusters))
+SeuObj$cluster <- factor(SeuObj$cluster, levels = cluster_levels)
 Idents(SeuObj) <- "cluster"
 
-# Arrange the cluster according to no
-SeuObj@active.ident <- factor (SeuObj@active.ident,
-                               levels = c('C0','C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12','C13','C14', 'C15', 'C16', 'C17', 'C18', 'C19', 'C20', 'C21', 'C22', 'C23', 'C24', 'C25', 'C26', 'C27', 'C28', 'C29', 'C30'))
-
-# Create tissue summary data frame
-summary <- SeuObj@meta.data %>%
-  group_by(cluster) %>%
-  count(Tissue) %>%
-  mutate(proportion = n / sum(n))
-
-# Reorder the cluster factor levels in the summary table to match the Seurat object
-summary$cluster <- factor(summary$cluster, levels = levels(Idents(SeuObj)))
-
-# Plot summary stacked bar chart
-ggp <- ggplot(summary, aes(x = cluster, y = proportion, fill = Tissue)) +
-  geom_bar(stat = "identity", position = "stack") +
-  guides(fill=guide_legend(title="Tissue")) +
-  theme(axis.text.x = element_text(angle = 45, hjust=1)) +
-  scale_fill_manual(values = friendly_pal("zesty_four"))+
-  scale_y_continuous(expand = c(0,0))
-
-ggp <- ggp+ 
-  labs(title = "Proportions of cells in each cluster by tissue")+
-  theme_classic(base_size = 12) +
-  theme(
-    axis.text.x = element_text(angle = 90, hjust = 1),
-    axis.line = element_line(color = "black"),
-    legend.position = "right",
-    legend.direction = "vertical",
-    legend.title = element_text(size = 12),
-    legend.text = element_text(size = 12),
-    legend.key.size = unit(0.8, "lines"),  # reduce point size in legend
-    legend.spacing.y = unit(1, "cm")     # reduce spacing between items
-  ) +
-  guides(color = guide_legend(override.aes = list(size = 3), ncol = 1))  # one column legend, small dots
-
-ggp
-
-# Save high-resolution SVG
-ggsave(
-  filename = "allTissue_Proportion_by_tissue.svg",
-  plot = ggp,
-  device = "svg",
-  path = "/data/home/hdx044/plots/seurat/allTissue",
-  width = 7,     
-  height = 3,
-  units = "in",
-  dpi = 600
+# ---- Cluster -> cell-type annotation (30 clusters, V7 seeded run) ------------
+cluster_to_type <- c(
+  "0"  = "Naive/TCM T cells",
+  "1"  = "Cytotoxic CD8 T cells",
+  "2"  = "Activated CD8 T cells",
+  "3"  = "Classical Monocytes",
+  "4"  = "Cytotoxic NK cells",
+  "5"  = "Capillary Endothelial cells",
+  "6"  = "Memory T cells",
+  "7"  = "SPP1+ Macrophages",
+  "8"  = "Naive B cells",
+  "9"  = "FOLR2+ Resident Macrophages",
+  "10" = "Venous Endothelial cells",
+  "11" = "Non-classical Monocytes",
+  "12" = "Fibroblasts",
+  "13" = "Neutrophils",
+  "14" = "cDC2",
+  "15" = "TAGLN Endothelial cells",
+  "16" = "Erythrocytes",
+  "17" = "Cholangiocytes",
+  "18" = "Mast cells",
+  "19" = "Plasma cells",
+  "20" = "Activated T cells",
+  "21" = "Hepatocytes",
+  "22" = "Cycling cells",
+  "23" = "Inflammatory Monocytes",
+  "24" = "Mesothelial cells",
+  "25" = "pDC",
+  "26" = "TREM2+ Macrophages",
+  "27" = "Fibroblasts",
+  "28" = "Adipocytes",
+  "29" = "Plasma cells"
 )
 
-#### Fig1.d ####
+raw_clusters      <- as.character(SeuObj$seurat_clusters)
+SeuObj$cell_type  <- unname(cluster_to_type[raw_clusters])
+missing_idx <- is.na(SeuObj$cell_type)
+if (any(missing_idx)) {
+  warning("Clusters not in the map -> labelled Unknown_*")
+  SeuObj$cell_type[missing_idx] <- paste0("Unknown_", raw_clusters[missing_idx])
+}
+SeuObj$cell_type_with_cluster <- paste0(SeuObj$cell_type, " (", SeuObj$cluster, ")")
 
-# Extract metadata including Tissue
-df <- SeuObj@meta.data %>%
-  dplyr::select(cell_type_with_cluster, Stage, Tissue)
+# ---- Biologically grouped order + matching palette --------------------------
+# Order is by lineage; labels/palette are built from cluster_to_type so they
+# can never drift out of sync with the annotation.
+lineage_order_ids <- c(
+  0, 2, 1, 6, 20,        # T cells
+  4,                     # NK
+  8, 19, 29,             # B / plasma
+  3, 11, 23,             # monocytes
+  7, 9, 26,              # macrophages
+  14, 25,                # DC
+  13, 18,                # granulocytes (neutrophil / mast)
+  12, 27, 24, 28,        # stromal
+  5, 10, 15,             # endothelial
+  17, 21,                # epithelial / parenchymal
+  16, 22                 # other (RBC / cycling)
+)
+stopifnot(setequal(lineage_order_ids, 0:(n_clusters - 1)))   # all clusters, once
 
-# Summarise proportions per Stage and Tissue
+type_levels <- paste0(cluster_to_type[as.character(lineage_order_ids)],
+                      " (C", lineage_order_ids, ")")
+
+SeuObj$cell_type_with_cluster <- factor(SeuObj$cell_type_with_cluster,
+                                        levels = type_levels)
+
+# 30 colours, grouped by lineage (same order as lineage_order_ids), named so
+# DimPlot maps colour -> cell type by NAME (order-independent).
+my_colors <- c(
+  "#7f0000","#b30000","#d7301f","#ef6548","#fc8d59",   # T (reds)
+  "#6a51a3",                                           # NK (purple)
+  "#08519c","#3182bd","#6baed6",                       # B / plasma (blues)
+  "#00441b","#238b45","#66c2a4",                       # monocytes (dark green)
+  "#41ab5d","#74c476","#a1d99b",                       # macrophages (green)
+  "#addd8e","#78c679",                                 # DC (yellow-green)
+  "#fec44f","#fe9929",                                 # granulocytes (amber)
+  "#8c510a","#bf812d","#dfc27d","#f6e8c3",             # stromal (brown)
+  "#01665e","#35978f","#80cdc1",                       # endothelial (teal)
+  "#d94801","#fd8d3c",                                 # epithelial/parenchymal (orange)
+  "#737373","#bdbdbd"                                  # other (grey)
+)
+stopifnot(length(my_colors) == n_clusters)
+names(my_colors) <- type_levels
+
+# ---- Write the annotation back to the object + a lookup table ---------------
+saveRDS(SeuObj, "/data/Blizard-AlazawiLab/rk/seurat/SeuObjV7.rds")
+dir.create("/data/Blizard-AlazawiLab/rk/Tcell/tables/Figure1", showWarnings = FALSE, recursive = TRUE)
+write.csv(
+  data.frame(cluster = paste0("C", names(cluster_to_type)),
+             cell_type = unname(cluster_to_type)),
+  "/data/Blizard-AlazawiLab/rk/Tcell/tables/Figure1/cluster_annotation_V7.csv",
+  row.names = FALSE
+)
+
+# ---- Stromal fraction (names updated to the new annotation) -----------------
+stromal_types <- c("Fibroblasts (C12)", "Mesothelial cells (C24)", "Adipocytes (C27)")
+cell_counts   <- table(SeuObj$cell_type_with_cluster)
+stromal_count <- sum(cell_counts[names(cell_counts) %in% stromal_types])
+cat("Stromal cells:", stromal_count, "of", sum(cell_counts),
+    "(", round(stromal_count / sum(cell_counts) * 100, 2), "% )\n")
+
+#### FIG 1B - UMAP ####
+Idents(SeuObj) <- "cell_type_with_cluster"
+ggp_b <- DimPlot(SeuObj, reduction = "umap", raster = FALSE, label = FALSE,
+                 group.by = "cell_type_with_cluster", cols = my_colors) +
+  ggtitle("All tissue harmony integrated clusters") +
+  my_theme +
+  theme(legend.position = "none")
+
+label_data <- ggp_b$data %>%
+  group_by(cell_type_with_cluster) %>%
+  summarise(umap_1 = median(umap_1), umap_2 = median(umap_2), .groups = "drop")
+cat("Label count:", nrow(label_data), "\n")
+
+ggp_b <- ggp_b +
+  ggrepel::geom_text_repel(
+    data = label_data,
+    aes(x = umap_1, y = umap_2, label = cell_type_with_cluster),
+    inherit.aes = FALSE, size = 2.0, fontface = "plain",
+    color = "black", bg.color = "white", bg.r = 0.12,
+    box.padding = 0.4, point.padding = 0.3,
+    segment.color = "grey40", segment.size = 0.25, segment.alpha = 0.6,
+    max.overlaps = Inf, min.segment.length = 0.3,
+    force = 3, force_pull = 0.5, seed = 42
+  )
+save_figure(ggp_b, "Fig1b_UMAP_labelled", width_cm = 12, height_cm = 12)
+
+#### FIG 1C - Tissue proportion per cluster ####
+# ordered cell-type labels, by cluster number C0..Cn
+cl_ids <- sort(as.integer(as.character(unique(SeuObj$seurat_clusters))))
+type_by_cluster <- paste0(cluster_to_type[as.character(cl_ids)], " (C", cl_ids, ")")
+
+# Build an atomic data.frame first: a Seurat meta.data list-column (or a plyr-
+# masked count) makes count() fail with "Argument 'x' is not a vector: list".
+.mdc <- data.frame(cell_type_with_cluster = as.character(SeuObj@meta.data$cell_type_with_cluster),
+                   Tissue = as.character(SeuObj@meta.data$Tissue), stringsAsFactors = FALSE)
+summary_c <- .mdc %>%
+  dplyr::count(cell_type_with_cluster, Tissue, name = "n") %>%
+  group_by(cell_type_with_cluster) %>%
+  mutate(proportion = n / sum(n)) %>% ungroup()
+summary_c$cell_type_with_cluster <- factor(summary_c$cell_type_with_cluster,
+                                           levels = type_by_cluster)
+
+ggp_c <- ggplot(summary_c, aes(x = cell_type_with_cluster, y = proportion, fill = Tissue)) +
+  geom_bar(stat = "identity", position = "stack") +
+  scale_fill_manual(values = tissue_cols) +
+  scale_y_continuous(expand = c(0, 0)) +
+  labs(title = "Tissue composition per cluster", x = NULL,
+       y = "Proportion of cells", fill = "Tissue") +
+  my_theme +
+  theme(plot.title  = element_text(size = 8, face = "plain", color = "black", hjust = 0),
+        axis.text.x = element_text(size = 6, color = "black", angle = 90, hjust = 1, vjust = 0.5)) +
+  guides(fill = guide_legend(ncol = 1))
+# (no bare `ggp_c` auto-print: it renders to R's default pdf() device, which cannot
+#  handle the Arial/showtext font on the node - "invalid font type". save_figure
+#  below renders via cairo_pdf and is the only render we need.)
+save_figure(ggp_c, "Fig1c_TissueProportion", width_cm = 18.3, height_cm = 9)
+
+#### FIG 1D - Cell type proportions by tissue and fibrosis stage ####
+df <- data.frame(cell_type_with_cluster = as.character(SeuObj@meta.data$cell_type_with_cluster),
+                 Stage  = as.character(SeuObj@meta.data$Stage),
+                 Tissue = as.character(SeuObj@meta.data$Tissue),
+                 stringsAsFactors = FALSE) %>%
+  filter(!is.na(Stage))
+df$Stage <- dplyr::recode(as.character(df$Stage),
+                          "Fibrosis" = "Fibrosis", "No_fibrosis" = "No Fibrosis", "Healthy" = "Healthy")
+df$Stage <- factor(df$Stage, levels = c("Healthy", "No Fibrosis", "Fibrosis"))
+
 df_summary <- df %>%
   group_by(Tissue, Stage, cell_type_with_cluster) %>%
   summarise(count = n(), .groups = "drop") %>%
-  group_by(Tissue, Stage) %>%
-  mutate(prop = count / sum(count))
+  group_by(Tissue, Stage) %>% mutate(prop = count / sum(count))
+df_summary$cell_type_with_cluster <- factor(df_summary$cell_type_with_cluster,
+                                            levels = levels(SeuObj$cell_type_with_cluster))
+write.csv(df_summary,
+          "/data/Blizard-AlazawiLab/rk/Tcell/tables/Figure1/all_cluster_proportion_cluster_tissue_stage.csv")
 
-# Ensure order of factors
-df_summary$Stage <- factor(df_summary$Stage, 
-                           levels = c("Healthy", "No_fibrosis", "Fibrosis"))
-df_summary$cell_type_with_cluster <- factor(
-  df_summary$cell_type_with_cluster,
-  levels = levels(SeuObj$cell_type_with_cluster)
-)
-
-write.csv(df_summary, "/data/home/hdx044/files/seurat/allTissue/all_cluster_proportion_cluster_tissue_stage.csv")
-
-# Palette must match levels
-names(my_colors) <- levels(df_summary$cell_type_with_cluster)
-
-# Plot, faceting by Tissue
-ggp <- ggplot(df_summary, aes(x = Stage, y = prop, fill = cell_type_with_cluster)) +
+ggp_d <- ggplot(df_summary, aes(x = Stage, y = prop, fill = cell_type_with_cluster)) +
   geom_bar(stat = "identity", position = position_stack(reverse = TRUE)) +
   scale_fill_manual(values = my_colors, guide = guide_legend(reverse = FALSE)) +
-  facet_wrap(~ Tissue, ncol = 4) +   # split plots by tissue
-  labs(
-    title = "Cell type proportions across tissues and stages",
-    x = NULL, y = "Proportion of cells", fill = "Cell types"
-  ) +
-  theme_bw() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1,size = 12, color = "black"),
-    axis.text.y = element_text(face = "bold", color = "black"),
-    axis.title.y = element_text(face = "bold", size = 12),
-    legend.position = "right",
-    legend.title = element_text(face = "bold", size = 12),
-    legend.text = element_text(size = 12)
-  )+
-  guides(fill = guide_legend(ncol = 1))
-
-
-ggp
-
-# Final TIFF for journal
-setwd("/data/home/hdx044/plots/seurat/allTissue")
-tiff("allTissue_cell_type_Proportion_by_tissue_stage.tiff", width=25, height=25, units="cm", res=600, compression="lzw")
-print(ggp)
-dev.off()
+  scale_y_continuous(expand = c(0, 0)) +
+  facet_wrap(~ Tissue, ncol = 4) +
+  labs(title = "Cell type proportions by tissue and fibrosis stage",
+       x = NULL, y = "Proportion of cells", fill = "Cell type") +
+  my_theme +
+  theme(plot.title       = element_text(size = 8, face = "plain", color = "black", hjust = 0),
+        axis.text.x      = element_text(size = 6, color = "black", angle = 45, hjust = 1, vjust = 1),
+        strip.text       = element_text(size = 7, face = "bold", color = "black"),
+        strip.background = element_rect(fill = "white", color = "black", linewidth = 0.4)) +
+  guides(fill = guide_legend(ncol = 1, override.aes = list(size = 2)))
+save_figure(ggp_d, "Fig1d_CellTypeProportion", width_cm = 14, height_cm = 14)
 
 # End of the script
